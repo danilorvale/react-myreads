@@ -12,13 +12,22 @@ class BookSearch extends Component{
 
     state = {
         query: '',
-        bookList : [{}]
+        bookList : [],
+        hasItem : false
     };
 
     onChange = (query)=>{
         this.setState({ query: query.trim() });
         BooksAPI.search(query)
-                .then(({result : items}) => this.setState({bookList: items}));
+                .then(result => {
+                        this.setState({bookList: result});
+                        
+                        if(this.state.bookList && this.state.bookList.length > 0){
+                            this.setState({hasItem : true});
+                        }else{
+                            this.setState({hasItem : false});
+                        }
+                    });
     };
 
     render(){
@@ -43,7 +52,7 @@ class BookSearch extends Component{
                 </div>
                 <div className="search-books-results">
                 <ol className="books-grid">
-                {this.state.bookList.length > 0 && (
+                {this.state.hasItem && (
                     this.state.bookList.map((bookObject)=>(
                         <li>
                             <Book book= {bookObject}/>
