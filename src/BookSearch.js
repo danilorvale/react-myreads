@@ -17,17 +17,21 @@ class BookSearch extends Component{
     };
 
     onChange = (query)=>{
-        this.setState({ query: query.trim() });
-        BooksAPI.search(query)
-                .then(result => {
-                        this.setState({bookList: result});
-                        
-                        if(this.state.bookList && this.state.bookList.length > 0){
-                            this.setState({hasItem : true});
-                        }else{
-                            this.setState({hasItem : false});
-                        }
-                    });
+        if(query === undefined || query === ''){
+            this.setState({hasItem : false, query: ''});            
+        }else{
+            this.setState({ query: query.trim() });
+            BooksAPI.search(query)
+                    .then(result => {
+                            if(result !== undefined && result.length > 0){
+                                this.setState({hasItem : true});
+                                this.setState({bookList: result});
+                            }else{
+                                this.setState({hasItem : false});
+                                this.setState({bookList: []});
+                            }
+                        });
+        }
     };
 
     render(){
