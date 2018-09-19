@@ -14,12 +14,28 @@ class BooksApp extends React.Component {
   backToHome =() =>{
     this.setState({ showSearchPage: false });
   }
+
+  addBookToReading =(book) =>{
+    this.state.booksReading.push(book);
+  }
+
+  addBookToWantRead =(book) =>{
+    this.state.booksWantToRead.push(book);
+  }
+
+  addBookToRead =(book) =>{
+    this.state.booksRead.push(book);
+  }
+
   render() {
 
     return (
       <div className="app">
         {this.state.showSearchPage ? (
-          <BookSearch onBack = { this.backToHome }/>
+          <BookSearch onBack = { this.backToHome } 
+                      onAddBookToRead={this.addBookToReading} 
+                      onAddBookToWantRead ={this.addBookToWantRead} 
+                      onAddBookToReading ={this.addBookToReading} />
         ) : (
           <div className="list-books">
             <div className="list-books-title">
