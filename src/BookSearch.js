@@ -8,7 +8,8 @@ import PropTypes from 'prop-types'
 class BookSearch extends Component{
 
     static propTypes = {
-        onBookMove : PropTypes.func.isRequired
+        onBookMove : PropTypes.func.isRequired,
+        myAllBooks : PropTypes.array.isRequired
     };
 
     state = {
@@ -26,7 +27,7 @@ class BookSearch extends Component{
                     .then(result => {
                             if(result !== undefined && result.length > 0){
                                 this.setState({hasItem : true});
-                                this.setState({bookList: result});
+                                this.setState({bookList: this.checkShelfState(result)});
                             }else{
                                 this.setState({hasItem : false});
                                 this.setState({bookList: []});
@@ -34,6 +35,24 @@ class BookSearch extends Component{
                         });
         }
     };
+
+    checkShelfState = (books)=>{
+        //var listBooks = [];
+
+        books.map((bookObject) =>{
+            var bookFind = this.props.myAllBooks.filter(book => book.id === bookObject.id);
+
+            if(bookFind !== undefined && bookFind.length > 0){
+                bookObject.shelf = bookFind[0].shelf;
+            }else{
+                bookObject.shelf = 'none';
+            }
+
+            return bookObject;
+        });
+
+        return books;
+    }
 
     onBookMove = (book,shelf) =>{
         this.props.onBookMove(book,shelf);
@@ -52,8 +71,8 @@ class BookSearch extends Component{
                 <ol className="books-grid">
                 {this.state.hasItem && (
                     this.state.bookList.map((bookObject)=>(
-                        <li>
-                            <Book book= {bookObject} onBookMove={this.onBookMove}/>
+                        <li key={bookObject.id}>
+                            <Book book= {bookObject} onBookMove={this.onBookMove} shelf={bookObject.shelf}/>
                         </li>
                     ))
                  )}

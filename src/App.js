@@ -32,6 +32,7 @@ class BooksApp extends React.Component {
     const booksToReading = this.state.books.filter(book => book.shelf === 'currentlyReading');
     const booksWantToRead = this.state.books.filter(book => book.shelf === 'wantToRead');
     const booksRead = this.state.books.filter(book => book.shelf === 'read');
+    const myAllBooks = this.state.books;
 
     return (
       <div className="app">
@@ -42,9 +43,9 @@ class BooksApp extends React.Component {
             </div>
             <div className="list-books-content">
               <div>
-                <BookShelf shelfTitle='Currently Reading'books={booksToReading} onBookMove={this.onBookMove}/>
-                <BookShelf shelfTitle='Want to Read' books={booksWantToRead} onBookMove={this.onBookMove}/>
-                <BookShelf shelfTitle='Read' books={booksRead} onBookMove={this.onBookMove}/>                
+                <BookShelf shelfTitle='Currently Reading'books={booksToReading} onBookMove={this.onBookMove} shelf='currentlyReading'/>
+                <BookShelf shelfTitle='Want to Read' books={booksWantToRead} onBookMove={this.onBookMove} shelf='wantToRead'/>
+                <BookShelf shelfTitle='Read' books={booksRead} onBookMove={this.onBookMove} shelf='read'/>                
               </div>
             </div>
             <div className="open-search">
@@ -53,7 +54,7 @@ class BooksApp extends React.Component {
           </div>
           )}/>
           <Route path='/search' render={() =>(
-            <BookSearch onBookMove={this.onBookMove}/>
+            <BookSearch onBookMove={this.onBookMove} myAllBooks={myAllBooks}/>
           )}/>        
       </div>
     )

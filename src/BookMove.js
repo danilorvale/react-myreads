@@ -6,11 +6,12 @@ class BookMove extends Component{
  
     static propTypes = {
         book: PropTypes.object.isRequired,
-        onBookMove : PropTypes.func.isRequired
+        onBookMove : PropTypes.func.isRequired,
+        shelf : PropTypes.string.isRequired
     };
 
     state ={
-        shelf : 'none'
+        shelf : this.props.shelf
     };
 
     onBookMove = (book,shelf) =>{
@@ -23,6 +24,7 @@ class BookMove extends Component{
     }
 
     render(){
+
         return (
                 <div className="book-shelf-changer">
                     <select value={this.state.shelf} onChange={this.onChangeShelf}>

@@ -8,11 +8,12 @@ class Book extends Component{
  
     static propTypes = {
         book: PropTypes.object.isRequired,
-        onBookMove : PropTypes.func.isRequired
+        onBookMove : PropTypes.func.isRequired,
+        shelf : PropTypes.string.isRequired
     };
 
     state = {
-        shelf: 'none'
+        shelf: this.props.shelf
     };    
 
     onBookMove = (book,shelf) =>{
@@ -20,7 +21,7 @@ class Book extends Component{
     }
 
     render(){
-        const { book } = this.props
+        const { book,shelf } = this.props
 
         var styleParameters = {
             width: 128, 
@@ -32,7 +33,7 @@ class Book extends Component{
             <div className="book">
                 <div className="book-top">
                 <div className="book-cover" style={styleParameters}></div>
-                <BookMove book={book} onBookMove={this.onBookMove}/>
+                <BookMove book={book} onBookMove={this.onBookMove} shelf={shelf}/>
                 </div>
                 <div className="book-title">{book.title}</div>
                 <div className="book-authors">{book.authors}</div>
