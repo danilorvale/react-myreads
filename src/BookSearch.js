@@ -1,26 +1,20 @@
 import React, { Component } from 'react'
 import * as BooksAPI from './BooksAPI'
 import './App.css'
-import PropTypes from 'prop-types'
 import Book from './Book'
+import { Link } from 'react-router-dom';
+import PropTypes from 'prop-types'
 
 class BookSearch extends Component{
 
     static propTypes = {
-        onBack: PropTypes.func.isRequired,
-        onAddBookToRead: PropTypes.func.isRequired, 
-        onAddBookToWantRead: PropTypes.func.isRequired, 
-        onAddBookToReading : PropTypes.func.isRequired
+        onBookMove : PropTypes.func.isRequired
     };
 
     state = {
         query: '',
         bookList : [],
         hasItem : false
-    };
-
-    onBack = () =>{
-        this.props.onBack();
     };
 
     onChange = (query)=>{
@@ -41,23 +35,15 @@ class BookSearch extends Component{
         }
     };
 
-    onAddBookToRead = (bookObject) =>{
-        this.props.onAddBookToRead(bookObject);
-    };
-    
-    onAddBookToWantRead =(bookObject) =>{
-        this.props.onAddBookToWantRead(bookObject);
-    };
-    
-    onAddBookToReading = (bookObject) =>{
-        this.props.onAddBookToReading(bookObject);
-    };
+    onBookMove = (book,shelf) =>{
+        this.props.onBookMove(book,shelf);
+    }
 
     render(){        
         return (
             <div className="search-books">
                 <div className="search-books-bar">
-                <a className="close-search" onClick={() => this.onBack()}>Close</a>
+                <Link to="/" className="close-search">Close</Link>
                 <div className="search-books-input-wrapper">                    
                     <input type="text" value={this.state.query} onChange={(event) => this.onChange(event.target.value) } placeholder="Search by title or author"/>
                 </div>
@@ -67,10 +53,7 @@ class BookSearch extends Component{
                 {this.state.hasItem && (
                     this.state.bookList.map((bookObject)=>(
                         <li>
-                            <Book book= {bookObject} 
-                                onAddBookToRead={() => this.onAddBookToRead(bookObject)} 
-                                onAddBookToWantRead ={() => this.onAddBookToWantRead(bookObject)} 
-                                onAddBookToReading ={() =>this.onAddBookToReading(bookObject)} />
+                            <Book book= {bookObject} onBookMove={this.onBookMove}/>
                         </li>
                     ))
                  )}
