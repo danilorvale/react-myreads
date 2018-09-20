@@ -7,11 +7,7 @@ import * as BooksAPI from './BooksAPI'
 
 class BooksApp extends React.Component {
   state = {
-    books : [],
-    booksReading:[],
-    booksWantToRead:[],
-    booksRead:[],
-    hasBookMoved: false
+    books : []
   }  
 
   componentWillMount(){
@@ -21,10 +17,12 @@ class BooksApp extends React.Component {
   }
 
   onBookMove = (book,shelf) =>{
-    BooksAPI.update(book,shelf);
-    BooksAPI.getAll().then(books =>{
-      this.setState({books : books})
-    });
+    BooksAPI.update(book,shelf)
+            .then(() =>{
+                BooksAPI.getAll().then(books =>{
+                  this.setState({books : books})
+                });
+            });    
   }
 
   render() {

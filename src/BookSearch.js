@@ -3,47 +3,64 @@ import * as BooksAPI from './BooksAPI'
 import './App.css'
 import Book from './Book'
 import { Link } from 'react-router-dom';
-import PropTypes from 'prop-types'
+import PropTypes from 'prop-types';
+import { debounce } from 'throttle-debounce';
 
 class BookSearch extends Component{
+    constructor(props){
+        super(props);
+        this.state = {
+            query: '',
+            bookList : [],
+            hasItem : false
+        };
+        this.autoCompleteSearchDebounce = debounce(500,this.autoCompleteSearh);
+    }
 
     static propTypes = {
         onBookMove : PropTypes.func.isRequired,
         myAllBooks : PropTypes.array.isRequired
     };
-
-    state = {
-        query: '',
-        bookList : [],
-        hasItem : false
+    
+    autoCompleteSearh = query =>{
+        this.searchBook(query);
     };
 
-    onChange = (query)=>{
-        if(query === undefined || query === ''){
-            this.setState({hasItem : false, query: ''});            
-        }else{
-            this.setState({ query: query.trim() });
+    searchBook = query =>{
+        if(query !== undefined && query !== ''){
             BooksAPI.search(query)
-                    .then(result => {
-                            if(result !== undefined && result.length > 0){
-                                this.setState({hasItem : true});
-                                this.setState({bookList: this.checkShelfState(result)});
-                            }else{
-                                this.setState({hasItem : false});
-                                this.setState({bookList: []});
-                            }
-                        });
+                        .then(result => {
+                                if(result !== undefined && result.length > 0){
+                                    this.setState({
+                                                    bookList: this.checkShelfState(result),
+                                                    hasItem : true
+                                                });
+                                }else{
+                                    this.setState({
+                                                    bookList: [],
+                                                    hasItem : false
+                                                });
+                                }
+                            });
+        }else{
+            this.setState({hasItem : false, query: ''});
         }
     };
 
+
+
+    onChange = (query)=>{
+        this.setState({ query : query.target.value}, () =>{
+                this.autoCompleteSearchDebounce(this.state.query);
+        });
+    };
+
     checkShelfState = (books)=>{
-        //var listBooks = [];
-
         books.map((bookObject) =>{
-            var bookFind = this.props.myAllBooks.filter(book => book.id === bookObject.id);
+            var bookFind = this.props.myAllBooks.find(book => book.id === bookObject.id);
 
-            if(bookFind !== undefined && bookFind.length > 0){
-                bookObject.shelf = bookFind[0].shelf;
+            if(bookFind !== undefined){
+                bookObject.shelf = bookFind.shelf;
             }else{
                 bookObject.shelf = 'none';
             }
@@ -64,7 +81,7 @@ class BookSearch extends Component{
                 <div className="search-books-bar">
                 <Link to="/" className="close-search">Close</Link>
                 <div className="search-books-input-wrapper">                    
-                    <input type="text" value={this.state.query} onChange={(event) => this.onChange(event.target.value) } placeholder="Search by title or author"/>
+                    <input type="text" value={this.state.query} onChange={this.onChange } placeholder="Search by title or author"/>
                 </div>
                 </div>
                 <div className="search-books-results">
